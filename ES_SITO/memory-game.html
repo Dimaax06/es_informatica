@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .flipped {
+            background-color: #fff;
+            color: #000;
+        }
+        .matched {
+            background-color: #ddd;
+            color: #333;
+        }
+        .back-button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Memory Game</h1>
+    <p>Abbina le carte!</p>
+    <div class="game-board" id="game-board"></div>
+
+    <script>
+        const symbols = ['🍎', '🍌', '🍒', '🍓', '🍉', '🍇', '🍊', '🍍'];
+        const cards = [...symbols, ...symbols];  // Duplicare i simboli
+        let flippedCards = [];
+        let matchedCards = [];
+        let board = document.getElementById('game-board');
+
+        // Shuffle function per mescolare le carte
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        // Funzione per creare le carte
+        function createCards() {
+            shuffle(cards).forEach(symbol => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.textContent = symbol;
+                card.addEventListener('click', flipCard);
+                board.appendChild(card);
+            });
+        }
+
+        // Funzione per gestire il clic sulle carte
+        function flipCard(event) {
+            const card = event.target;
+
+            if (flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 1000);
+                }
+            }
+        }
+
+        // Funzione per verificare se le carte corrispondono
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.textContent === card2.textContent) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedCards.push(card1, card2);
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+            }
+            flippedCards = [];
+            if (matchedCards.length === cards.length) {
+                alert('Hai vinto!');
+            }
+        }
+
+        createCards();
+    </script>
+
+    </br>
+    <button class="back-button" onclick="window.location.href='index.html'">Torna alla homepage</button>
+
+</body>
+</html>

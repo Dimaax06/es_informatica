@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .clock {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        h1 {
+            margin-bottom: 40px;
+        }
+        .game-link {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .game-link:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Orari principali fusorari europei</h1>
+
+    <div id="london" class="clock">Londra: --:--</div>
+    <div id="paris" class="clock">Parigi: --:--</div>
+    <div id="rome" class="clock">Roma: --:--</div>
+    <div id="berlin" class="clock">Berlino: --:--</div>
+
+    <h1>Benvenuto nei Minigiochi</h1>
+
+    <p>Seleziona un gioco per iniziare!</p>
+
+    <a href="memory-game.html" class="game-link">Memory Game</a>
+    <a href="snake-game.html" class="game-link">Snake Game</a>
+    <a href="clicker-game.html" class="game-link">Clicker Game</a>
+
+    <script>
+        // Funzione per ottenere l'ora per ciascun fuso orario
+        function updateClock(city, timezone) {
+            const now = new Date();
+            const options = {
+                timeZone: timezone,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const time = now.toLocaleTimeString([], options);
+            document.getElementById(city).textContent = `${city.charAt(0).toUpperCase() + city.slice(1)}: ${time}`;
+        }
+
+        // Aggiornamento orari in tempo reale
+        function updateTime() {
+            updateClock('london', 'Europe/London');
+            updateClock('paris', 'Europe/Paris');
+            updateClock('rome', 'Europe/Rome');
+            updateClock('berlin', 'Europe/Berlin');
+        }
+
+        // Chiamata iniziale per aggiornare l'orario
+        setInterval(updateTime, 1000);  // Aggiorna ogni secondo
+    </script>
+
+</body>
+</html>

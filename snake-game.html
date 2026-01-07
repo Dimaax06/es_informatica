@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Snake Game</h1>
+    <p>Muovi il serpente con le frecce per raccogliere il cibo!</p>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const scale = 20;
+        const rows = canvas.height / scale;
+        const columns = canvas.width / scale;
+
+        let snake;
+        let apple;
+
+        (function setup() {
+            snake = new Snake();
+            apple = new Apple();
+            window.setInterval(update, 100);
+            window.addEventListener("keydown", e => {
+                const direction = e.key.replace("Arrow", "").toLowerCase();
+                snake.changeDirection(direction);
+            });
+        })();
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            snake.move();
+            snake.draw();
+            apple.draw();
+
+            if (snake.eatApple(apple)) {
+                apple.randomizePosition();
+                snake.grow();
+            }
+
+            if (snake.isDead()) {
+                alert("Game Over!");
+                snake = new Snake();
+            }
+        }
+
+        function Snake() {
+            this.snakeArray = [{ x: 9, y: 9 }];
+            this.length = 1;
+            this.direction = "right";
+            this.changeDirection = function (dir) {
+                if (dir === "up" && this.direction !== "down") {
+                    this.direction = "up";
+                }
+                if (dir === "down" && this.direction !== "up") {
+                    this.direction = "down";
+                }
+                if (dir === "left" && this.direction !== "right") {
+                    this.direction = "left";
+                }
+                if (dir === "right" && this.direction !== "left") {
+                    this.direction = "right";
+                }
+            };
+            this.move = function () {
+                const head = { ...this.snakeArray[0] };
+                if (this.direction === "up") head.y -= 1;
+                if (this.direction === "down") head.y += 1;
+                if (this.direction === "left") head.x -= 1;
+                if (this.direction === "right") head.x += 1;
+
+                this.snakeArray.unshift(head);
+                if (this.snakeArray.length > this.length) {
+                    this.snakeArray.pop();
+                }
+            };
+            this.draw = function () {
+                this.snakeArray.forEach((segment, index) => {
+                    ctx.fillStyle = index === 0 ? "green" : "lightgreen";
+                    ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+                });
+            };
+            this.eatApple = function (apple) {
+                const head = this.snakeArray[0];
+                return head.x === apple.x && head.y === apple.y;
+            };
+            this.grow = function () {
+                this.length++;
+            };
+            this.isDead = function () {
+                const head = this.snakeArray[0];
+                return head.x < 0 || head.x >= columns || head.y < 0 || head.y >= rows || this.snakeArray.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
+            };
+        }
+
+        function Apple() {
+            this.x = Math.floor(Math.random() * columns);
+            this.y = Math.floor(Math.random() * rows);
+            this.draw = function () {
+                ctx.fillStyle = "red";
+                ctx.fillRect(this.x * scale, this.y * scale, scale, scale);
+            };
+            this.randomizePosition = function () {
+                this.x = Math.floor(Math.random() * columns);
+                this.y = Math.floor(Math.random() * rows);
+            };
+        }
+    </script>
+    
+    </br>
+    <button class="back-button" onclick="window.location.href='index.html'">Torna alla homepage</button>
+
+</body>
+</html>
